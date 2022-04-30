@@ -9,7 +9,7 @@ struct Intersection
     // Point of intersection
     glm::vec3 point;
     // Normal of this intersection point
-    glm::vec3      normal;
+    glm::vec3 normal;
     // Distance of the ray origin to intersection
     float     distance;
     // Intersection with a front face 

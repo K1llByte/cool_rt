@@ -10,11 +10,18 @@
 #include "sphere.hpp"
 #include "camera.hpp"
 #include "utils.hpp"
+#include "scene.hpp"
 
-#define SAMPLES_PER_PIXEL 16
+#define WIDTH  400
+#define HEIGHT 300
+#define SAMPLES_PER_PIXEL 100
+#define NUM_ITERATIONS 50
 
 void write_color(std::ostream &out, glm::vec3 color)
 {
+    // glm::radians(360);
+    // glm::radians(180);
+
     // Write the translated [0,255] value of each color component.
     color /= static_cast<float>(SAMPLES_PER_PIXEL);
     glm::ivec3 res{
@@ -25,32 +32,28 @@ void write_color(std::ostream &out, glm::vec3 color)
     out << res.r << ' ' << res.g << ' ' << res.b << '\n';
 }
 
-float hit_sphere(const glm::vec3& center, float radius, const Ray& r)
+glm::vec3 ray_color(const Ray& r, Scene& scene, float depth)
 {
-    // Simplification explained in 6.2
-    glm::vec3 oc = r.origin - center;
-    auto a = glm::length2(r.direction);
-    auto half_b = glm::dot(oc, r.direction);
-    auto c = glm::dot(oc, oc) - radius * radius;
-    auto discriminant = half_b*half_b - a*c;
-    // If there's no solutions return -1
-    // otherwise return the distance of the hit point
-    // this will be used to compute the normal since we
-    // already know the other values.
-    return (discriminant < 0)
-        ? -1.0
-        : (-half_b-sqrt(discriminant)) / a;
-}
+    // If we've exceeded the ray bounce limit, no more light is gathered.
+    if (depth <= 0)
+        return glm::vec3{0,0,0};
 
-glm::vec3 ray_color(const Ray& r)
-{
     // Hit sphere
     Intersection intersect;
-    Sphere sphere(glm::vec3{0, 0, -1}, 0.5f);
-    if(sphere.hit(r, 0, 2.f, intersect)) {
-        // Values are normalized from [-1, 1] to [0, 1].
-        return 0.5f * (intersect.normal+1.f);
+    if(scene.hit(r, 0, infinity, intersect)) {
+        glm::vec3 target = intersect.point + intersect.normal + random_in_unit_sphere();
+        return 0.5f * ray_color(Ray{intersect.point, target - intersect.point}, scene, depth-1);
     }
+    // Sphere sphere(glm::vec3{0, 0, -1}, 0.5f);
+    // if(sphere.hit(r, 0, infinity, intersect)) {
+    //     glm::vec3 target = intersect.point + intersect.normal + random_in_unit_sphere();
+    //     return 0.5f * ray_color(Ray{intersect.point, target - intersect.point}, depth-1);
+    // }
+    // Sphere sphere2(glm::vec3{0, -100.5, -1}, 100);
+    // if(sphere2.hit(r, 0, infinity, intersect)) {
+    //     glm::vec3 target = intersect.point + intersect.normal + random_in_unit_sphere();
+    //     return 0.5f * ray_color(Ray{intersect.point, target - intersect.point}, depth-1);
+    // }
 
     // Values are normalized from [-1, 1] to [0, 1].
     auto t = 0.5f * (glm::normalize(r.direction).g + 1.0f);
@@ -69,12 +72,19 @@ int main() {
 
     // Image
 
-    const int image_width = 400;
-    const int image_height = 300;
+    const int image_width = WIDTH;
+    const int image_height = HEIGHT;
     const auto aspect_ratio = static_cast<float>(image_width) / static_cast<float>(image_height);
 
     // Camera
     auto camera = Camera(aspect_ratio);
+
+    // Scene
+    auto scene = Scene({
+        Sphere(glm::vec3{0,      0, -1}, 0.5f),
+        Sphere(glm::vec3{0, -100.5, -1}, 100)
+    });
+    
     // auto viewport_height = 2.0;
     // auto viewport_width = aspect_ratio * viewport_height;
     // auto focal_length = 1.0;
@@ -103,7 +113,7 @@ int main() {
             // Instanciate Ray
             auto r = camera.get_ray(u, v);
 
-            glm::vec3 color = ray_color(r);
+            glm::vec3 color = ray_color(r, scene, NUM_ITERATIONS);
 #else
             glm::vec3 color{};
             // Stochastic sampling
@@ -120,7 +130,7 @@ int main() {
                 // Instanciate Ray
                 auto r = camera.get_ray(u, v);
 
-                color += ray_color(r);
+                color += ray_color(r, scene, NUM_ITERATIONS);
             }
 #endif
 

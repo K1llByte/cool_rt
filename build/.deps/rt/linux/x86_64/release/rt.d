@@ -1,7 +1,8 @@
 {
     files = {
-        "build/.objs/rt/linux/x86_64/release/src/sphere.cpp.o",
+        "build/.objs/rt/linux/x86_64/release/src/scene.cpp.o",
         "build/.objs/rt/linux/x86_64/release/src/main.cpp.o",
+        "build/.objs/rt/linux/x86_64/release/src/sphere.cpp.o",
         "build/.objs/rt/linux/x86_64/release/src/camera.cpp.o"
     },
     values = {

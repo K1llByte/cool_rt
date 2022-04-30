@@ -2,6 +2,8 @@
     files = {
         "src/camera.cpp"
     },
+    depfiles_gcc = "build/.objs/rt/linux/x86_64/release/src/camera.cpp.o: src/camera.cpp  src/camera.hpp src/ray.hpp\
+",
     values = {
         "/usr/bin/gcc",
         {
@@ -18,7 +20,5 @@
             "-Wshadow",
             "-Wpedantic"
         }
-    },
-    depfiles_gcc = "build/.objs/rt/linux/x86_64/release/src/camera.cpp.o: src/camera.cpp  src/camera.hpp src/ray.hpp\
-"
+    }
 }
