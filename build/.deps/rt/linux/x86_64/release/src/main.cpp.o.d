@@ -1,4 +1,6 @@
 {
+    depfiles_gcc = "build/.objs/rt/linux/x86_64/release/src/main.cpp.o: src/main.cpp  src/ray.hpp src/material.hpp src/utils.hpp src/intersection.hpp  src/sphere.hpp src/camera.hpp src/scene.hpp\
+",
     values = {
         "/usr/bin/gcc",
         {
@@ -16,8 +18,6 @@
             "-Wpedantic"
         }
     },
-    depfiles_gcc = "build/.objs/rt/linux/x86_64/release/src/main.cpp.o: src/main.cpp  src/ray.hpp src/intersection.hpp src/sphere.hpp src/camera.hpp  src/utils.hpp src/scene.hpp\
-",
     files = {
         "src/main.cpp"
     }

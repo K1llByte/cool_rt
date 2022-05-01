@@ -1,4 +1,9 @@
 {
+    depfiles_gcc = "build/.objs/rt/linux/x86_64/release/src/sphere.cpp.o: src/sphere.cpp  src/sphere.hpp src/intersection.hpp src/ray.hpp src/material.hpp  src/utils.hpp\
+",
+    files = {
+        "src/sphere.cpp"
+    },
     values = {
         "/usr/bin/gcc",
         {
@@ -15,10 +20,5 @@
             "-Wshadow",
             "-Wpedantic"
         }
-    },
-    files = {
-        "src/sphere.cpp"
-    },
-    depfiles_gcc = "build/.objs/rt/linux/x86_64/release/src/sphere.cpp.o: src/sphere.cpp  src/sphere.hpp src/intersection.hpp src/ray.hpp\
-"
+    }
 }

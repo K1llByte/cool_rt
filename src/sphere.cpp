@@ -33,6 +33,7 @@ bool Sphere::hit(const Ray& r, double t_min, double t_max, Intersection& rec) co
     // or glm::normalize
     auto outward_normal = (rec.point - center) / radius;
     rec.set_face_normal(r, outward_normal);
+    rec.material = material;
 
     return true;
 }

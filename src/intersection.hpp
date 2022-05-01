@@ -3,6 +3,12 @@
 #include <glm/fwd.hpp>
 
 #include "ray.hpp"
+// #include "material.hpp"
+
+// Forward declaration
+namespace abc {
+    class Material;
+}
 
 struct Intersection
 {
@@ -12,6 +18,8 @@ struct Intersection
     glm::vec3 normal;
     // Distance of the ray origin to intersection
     float     distance;
+    // Material of the intersected object
+    abc::Material* material;
     // Intersection with a front face 
     bool      front_face;
 
