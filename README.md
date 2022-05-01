@@ -2,7 +2,7 @@
 
 A software ray tracer for learning purposes.
 
-![](manke.png)
+![](images/preview1.png)
 
 ## Goals
 
