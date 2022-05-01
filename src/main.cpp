@@ -12,6 +12,7 @@
 #include "camera.hpp"
 #include "utils.hpp"
 #include "scene.hpp"
+#include "image.hpp"
 
 #define FAST_RENDER
 
@@ -27,19 +28,33 @@
 #   define NUM_ITERATIONS 50
 #endif
 
-void write_color(std::ostream &out, glm::vec3 color)
-{
-    // glm::radians(360);
-    // glm::radians(180);
+// void write_color(std::ostream &out, glm::vec3 color)
+// {
+//     // glm::radians(360);
+//     // glm::radians(180);
 
+//     // Write the translated [0,255] value of each color component.
+//     color = glm::sqrt(color / static_cast<float>(SAMPLES_PER_PIXEL));
+//     glm::ivec3 res{
+//         256 * std::clamp(color.r, 0.0f, 0.999f),
+//         256 * std::clamp(color.g, 0.0f, 0.999f),
+//         256 * std::clamp(color.b, 0.0f, 0.999f)
+//     };
+//     out << res.r << ' ' << res.g << ' ' << res.b << '\n';
+// }
+
+void write_color(Image& out, const glm::ivec2& pos, glm::vec3 color)
+{
     // Write the translated [0,255] value of each color component.
     color = glm::sqrt(color / static_cast<float>(SAMPLES_PER_PIXEL));
-    glm::ivec3 res{
+    glm::ivec3 pixel{
         256 * std::clamp(color.r, 0.0f, 0.999f),
         256 * std::clamp(color.g, 0.0f, 0.999f),
         256 * std::clamp(color.b, 0.0f, 0.999f)
     };
-    out << res.r << ' ' << res.g << ' ' << res.b << '\n';
+
+    out.set_pixel(pos.x, pos.y, pixel);
+    // out << res.r << ' ' << res.g << ' ' << res.b << '\n';
 }
 
 glm::vec3 ray_color(const Ray& r, Scene& scene, float depth)
@@ -69,12 +84,13 @@ glm::vec3 ray_color(const Ray& r, Scene& scene, float depth)
 int main()
 {
     // Render Target
-    std::ofstream file("image.ppm");
-    if(not file.is_open())
-    {
-        std::cerr << "Error: Cannot open file\n";
-        return 1;
-    }
+    // std::ofstream file("image.ppm");
+    // if(not file.is_open())
+    // {
+    //     std::cerr << "Error: Cannot open file\n";
+    //     return 1;
+    // }
+    auto render_target = Image(WIDTH, HEIGHT);
 
     // Image
     const int image_width = WIDTH;
@@ -88,10 +104,10 @@ int main()
         position, // position
         lookat, // lookat
         glm::vec3{0,1,0}, // up
-        90,
+        50,
         aspect_ratio,
         glm::length(position-lookat),
-        1.0);
+        0.5);
 
     // Scene
     auto* ground =       new Lambertian(glm::vec3{ 0.8, 0.8, 0.0 });
@@ -106,7 +122,7 @@ int main()
     });
 
     // Render
-    file << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+    // file << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
     for (int j = image_height-1; j >= 0; --j)
     {
@@ -142,9 +158,11 @@ int main()
             }
 #endif
 
-            write_color(file, color);
+            // write_color(file, color);
+            write_color(render_target, glm::ivec2{i,image_height-j}, color);
         }
     }
 
-    file.close();
+    render_target.save("image.ppm");
+
 }

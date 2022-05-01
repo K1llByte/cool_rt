@@ -8,7 +8,8 @@ A software ray tracer for learning purposes.
 
 - [x] Refractions
 - [x] Enhace camera
-- [ ] Defocus blur
+- [x] Defocus blur
+- [ ] Enhace Renderer
 - [ ] Multithreading
 - [ ] Realtime feedback. Render to a window which shows the image even if it isn't yet finished
 - [ ] Render target to a iamge object which can b saved in any format (not just ppm)
