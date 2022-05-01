@@ -81,8 +81,9 @@ int main() {
     auto* material_center = new Lambertian(glm::vec3{ 0.7, 0.3, 0.3 });
     auto* material_right = new Metal(glm::vec3{ 0.8, 0.8, 0.8 });
     auto* material_left = new Metal(glm::vec3{ 0.8, 0.6, 0.2 }, 1);
+    auto* material_dialetric = new Dielectric(1.5);
     auto scene = Scene({
-        Sphere(glm::vec3{ 0,     0, -1}, 0.5f, material_center),
+        Sphere(glm::vec3{ 0,     0, -1}, 0.5f, material_dialetric),
         Sphere(glm::vec3{ 1,     0, -1}, 0.5f, material_right),
         Sphere(glm::vec3{-1,     0, -1}, 0.5f, material_left),
         Sphere(glm::vec3{0, -100.5, -1},  100, material_ground)

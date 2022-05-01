@@ -64,3 +64,34 @@ class Metal: public abc::Material
         return (dot(scattered.direction, rec.normal) > 0);
     }
 };
+
+class Dielectric: public abc::Material
+{
+    public:
+    // Index of Refraction
+    float ir;
+
+    public:
+    Dielectric(float _ir)
+        : ir(_ir) {}
+
+    virtual bool scatter(
+            const Ray& r_in, const Intersection& rec, glm::vec3& attenuation, Ray& scattered) const
+    {
+        // Transparent is white
+        attenuation = glm::vec3{1.0, 1.0, 1.0};
+        // Refraction ratio order will change depending on
+        // the material we're hitting from
+        float refraction_ratio = rec.front_face ? (1.0/ir) : ir;
+        glm::vec3 unit_direction = glm::normalize(r_in.direction);
+        glm::vec3 refracted = glm::refract(unit_direction, rec.normal, refraction_ratio);
+
+        scattered = Ray{rec.point, refracted};
+        return true;
+
+        // glm::vec3 reflected = glm::reflect(glm::normalize(r_in.direction), rec.normal);
+        // scattered = Ray{rec.point, reflected + fuzziness * random_in_unit_sphere()};
+        // attenuation = albedo;
+        // return (dot(scattered.direction, rec.normal) > 0);
+    }
+};
