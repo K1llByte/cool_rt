@@ -1,14 +1,3 @@
-#include <iostream>
-#include <fstream>
-#include <algorithm>
-
-// Debug
-// #include <fmt/core.h>
-
-// #include <glm/glm.hpp>
-// #include <glm/gtx/norm.hpp>
-
-
 #include "renderer.hpp"
 
 #define FAST_RENDER
