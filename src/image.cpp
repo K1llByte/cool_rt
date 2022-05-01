@@ -3,6 +3,8 @@
 #include <iostream>
 #include <fstream>
 
+#include <fmt/core.h>
+
 void Image::save(const std::string_view& filename)
 {
     // Open file

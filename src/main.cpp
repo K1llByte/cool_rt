@@ -3,8 +3,8 @@
 #define FAST_RENDER
 
 #ifdef FAST_RENDER
-#   define WIDTH  400 // 1600  
-#   define HEIGHT 300 //  900  
+#   define WIDTH  400
+#   define HEIGHT 300
 #   define SAMPLES_PER_PIXEL 50
 #   define NUM_ITERATIONS 50
 #else
@@ -19,7 +19,11 @@ int main()
     // Image
     auto render_target = Image(WIDTH, HEIGHT);
     // Renderer
-    auto renderer = Renderer(render_target);
+    auto config = RayTracerConfig {
+        .samples_per_pixel = SAMPLES_PER_PIXEL,
+        .num_iterations = NUM_ITERATIONS,
+    };
+    auto renderer = Renderer(render_target, config);
 
     // Camera
     auto position = glm::vec3{-2,2, 1};
