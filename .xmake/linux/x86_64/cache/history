@@ -61,8 +61,8 @@
         "xmake build rt",
         "xmake build rt",
         "xmake build rt",
-        "xmake lua /usr/share/xmake/actions/build/statistics.lua",
-        "xmake lua /usr/share/xmake/actions/build/cleaner.lua",
+        "xmake build rt",
+        "xmake build rt",
         "xmake build rt",
         "xmake build rt"
     }

@@ -39,6 +39,7 @@ constexpr glm::vec3 to_cartesian(const glm::vec3& v)
 
 inline glm::vec3 random_in_unit_sphere()
 {
+    // TODO: Improve this algorithms
     // auto radius = random_float(0, 1);
     // auto theta = random_float(0, glm::radians(360.f));
     // auto psi = random_float(glm::radians(-90.f), glm::radians(90.f));
@@ -52,9 +53,32 @@ inline glm::vec3 random_in_unit_sphere()
     } 
 }
 
+inline glm::vec3 random_in_unit_disk()
+{
+    // TODO: Improve this algorithms
+    while(true)
+    {
+        auto p = glm::vec3{random_float(-1,1), random_float(-1,1), 0};
+        if(glm::length2(p) >= 1)
+            continue;
+        return p;
+    }
+}
+
 inline bool near_zero(glm::vec3 v)
 {
     // Return true if the vector is close to zero in all dimensions.
     const auto s = 1e-8;
     return (fabs(v.x) < s) && (fabs(v.y) < s) && (fabs(v.z) < s);
+}
+
+// Get the probability of reflectance acording to Schlick Approximation
+// This takes into account the incidence angle and the refraction ratio
+// and computes a probability
+inline float reflectance(float cosine, float refraction_ratio)
+{
+    // Use Schlick's approximation for reflectance.
+    auto r0 = (1-refraction_ratio) / (1+refraction_ratio);
+    r0 *= r0;
+    return r0 + (1-r0)*pow((1 - cosine),5);
 }

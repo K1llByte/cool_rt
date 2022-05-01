@@ -84,14 +84,24 @@ class Dielectric: public abc::Material
         // the material we're hitting from
         float refraction_ratio = rec.front_face ? (1.0/ir) : ir;
         glm::vec3 unit_direction = glm::normalize(r_in.direction);
-        glm::vec3 refracted = glm::refract(unit_direction, rec.normal, refraction_ratio);
+        const float cos_theta = fmin(dot(-unit_direction, rec.normal), 1.0);
+        const float sin_theta = sqrt(1.0 - cos_theta*cos_theta);
 
-        scattered = Ray{rec.point, refracted};
+        glm::vec3 scatter_direction;
+        if(refraction_ratio * sin_theta > 1.f
+            || reflectance(cos_theta, refraction_ratio) > random_float())
+        {
+            // Reflect
+            scatter_direction = glm::reflect(unit_direction, rec.normal);
+        }
+        else {
+            // Refract
+            scatter_direction = glm::refract(unit_direction, rec.normal, refraction_ratio);
+        }
+
+        // glm::vec3 refracted = glm::refract(unit_direction, rec.normal, refraction_ratio);
+
+        scattered = Ray{rec.point, scatter_direction};
         return true;
-
-        // glm::vec3 reflected = glm::reflect(glm::normalize(r_in.direction), rec.normal);
-        // scattered = Ray{rec.point, reflected + fuzziness * random_in_unit_sphere()};
-        // attenuation = albedo;
-        // return (dot(scattered.direction, rec.normal) > 0);
     }
 };
