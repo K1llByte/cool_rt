@@ -12,6 +12,6 @@ A software ray tracer for learning purposes.
 - [x] Enhace Renderer
 - [x] Profiler
 - [x] Multithreading
+- [x] Render target to a image object which can be saved in ~~any format~~ png format (not just ppm)
 - [ ] Realtime feedback. Render to a window which shows the image even if it isn't yet finished
-- [ ] Render target to a iamge object which can b saved in any format (not just ppm)
 - [ ] Load arbitrary models instead of just spheres

@@ -1,7 +1,7 @@
 #include "renderer.hpp"
 #include "time.hpp"
 
-#define FAST_RENDER
+// #define FAST_RENDER
 
 #ifdef FAST_RENDER
 #   define WIDTH  400
