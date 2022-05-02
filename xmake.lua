@@ -1,6 +1,7 @@
 -- Package Requirements
 add_requires("fmt")
 add_requires("glm")
+add_requires("libgd")
 
 -------------------- Ray Tracer -------------------
 
@@ -15,10 +16,11 @@ target("rt")
     set_targetdir("bin/")
     -- Compiler Options
     add_includedirs("src")
+    add_includedirs("lib/tiny_png_out")
     -- Dependencies
     add_packages("glm")
-    -- add_packages("boost")
     add_packages("fmt")
     -- Library
     set_kind("binary")
     add_files("src/**.cpp")
+    add_files("lib/tiny_png_out/TinyPngOut.cpp")

@@ -16,6 +16,9 @@ class Camera
     glm::vec3 up;
     glm::vec3 right;
 
+    float viewport_height;
+    float viewport_width;
+    float vfov;
     float lens_radius;
 
     public:
@@ -24,9 +27,9 @@ class Camera
         glm::vec3 lookat,
         glm::vec3 up,
         float vfov,
-        float aspect_ratio,
-        float focus_dist,
-        float aperture);
+        float aspect_ratio);
 
     Ray get_ray(float u, float v) const;
+
+    void set_defocus_blur(float focus_dist, float aperture);
 };

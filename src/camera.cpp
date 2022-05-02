@@ -4,11 +4,10 @@ Camera::Camera(
     glm::vec3 position,
     glm::vec3 lookat,
     glm::vec3 _up,
-    float vfov,
-    float aspect_ratio,
-    float focus_dist,
-    float aperture)
+    float _vfov,
+    float aspect_ratio)
     : origin(position)
+    , vfov(_vfov) 
 {
     // float h = tan(glm::radians(vfov)/2.f);
     // // viewport_height varies according to the fov
@@ -29,18 +28,18 @@ Camera::Camera(
 
     float h = tan(glm::radians(vfov)/2.f);
     // viewport_height varies according to the fov
-    auto viewport_height = 2.0f * h;
-    auto viewport_width = aspect_ratio * viewport_height;
+    viewport_height = 2.0f * h;
+    viewport_width = aspect_ratio * viewport_height;
 
     back = glm::normalize(position - lookat);
     right = glm::normalize(glm::cross(_up, back));
     up = glm::cross(back, right);
 
-    horizontal = focus_dist * viewport_width * right;
-    vertical = focus_dist * viewport_height * up;
-    lower_left_corner = origin - horizontal/2.f - vertical/2.f - focus_dist * back;
+    horizontal = viewport_width * right;
+    vertical = viewport_height * up;
+    lower_left_corner = origin - horizontal/2.f - vertical/2.f - back;
 
-    lens_radius = aperture / 2;
+    lens_radius = 0.f;
 }
 
 Ray Camera::get_ray(float u, float v) const
@@ -52,4 +51,13 @@ Ray Camera::get_ray(float u, float v) const
         origin + offset,
         lower_left_corner + u*horizontal + v*vertical - origin - offset
     };
+}
+
+void Camera::set_defocus_blur(float focus_dist, float aperture)
+{
+    horizontal = focus_dist * viewport_width * right;
+    vertical = focus_dist * viewport_height * up;
+    lower_left_corner = origin - horizontal/2.f - vertical/2.f - focus_dist * back;
+
+    lens_radius = aperture / 2;
 }
