@@ -21,7 +21,7 @@
 int main()
 {
     // Image
-    // auto render_target = Image(WIDTH, HEIGHT);
+    // auto window = Image(WIDTH, HEIGHT);
     auto window = GuiWindow(WIDTH, HEIGHT);
     // Renderer
     auto config = RayTracerConfig {
@@ -58,7 +58,7 @@ int main()
     std::thread a([&]{
         // Render scene with camera
         Time::delta();
-        // renderer.render(scene, camera);
+        renderer.render(scene, camera);
         auto time = Time::delta();
         fmt::print("\nTook: {} secs", time);
     });
@@ -68,6 +68,7 @@ int main()
     {
         window.present();
     }
+    a.join();
 
     // Save render to image file
     // render_target.save("image.png");

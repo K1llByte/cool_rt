@@ -47,9 +47,11 @@ class GuiWindow : public abc::RenderTarget
     GuiWindow(size_t _width, size_t _height);
     ~GuiWindow();
 
-    constexpr void set_pixel(size_t x, size_t y, glm::vec<3,uint8_t> value) override
+    void set_pixel(size_t x, size_t y, glm::vec<3,uint8_t> value) override
     {
+        fmt::print("before set_pixel\n");
         framebuffer.set_pixel(x,y,value);
+        fmt::print("after set_pixel\n");
     }
 
     constexpr glm::vec<3,uint8_t> get_pixel(size_t x, size_t y) const override

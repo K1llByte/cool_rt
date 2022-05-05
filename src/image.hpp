@@ -26,7 +26,7 @@ class Image: public abc::RenderTarget
     {
         // fmt::print("Image({},{})\n", width, height);
         for(size_t i = 0; i < width*height; ++i)
-            data[i] = glm::vec<3,uint8_t>{100,0,0};
+            data[i] = glm::vec<3,uint8_t>{255,0,0};
         // fmt::print("First val {}\n", data[0].r);
     }
 
@@ -42,7 +42,6 @@ class Image: public abc::RenderTarget
 
     constexpr size_t get_width() const override { return width; }
     constexpr size_t get_height() const override { return height; }
-    constexpr float aspect_ratio() const { return float(width) / float(height); }
 
     void save(const std::string_view& filename);
     

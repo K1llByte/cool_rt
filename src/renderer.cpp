@@ -43,73 +43,12 @@ glm::vec3 Renderer::ray_color(const Ray& r, Scene& scene, float depth)
 }
 
 // Multithreaded render
-void Renderer::render(Scene& scene, Camera& camera)
-{
-    const auto width = render_target->get_width();
-    const auto height = render_target->get_height();
-
-    std::array<std::thread,4> threads;
-
-    std::atomic_size_t progress = height;
-    auto work = [&](size_t from, size_t to) {
-        for(size_t j = from; j < to; ++j)
-        {
-            for(size_t i = 0; i < width; ++i)
-            {
-                glm::vec3 color{0,0,0};
-                // Stochastic sampling
-                auto min_u = (i-0.5f) / (width-1.f);
-                auto max_u = (i+0.5f) / (width-1.f);
-                auto min_v = (j-0.5f) / (height-1.f);
-                auto max_v = (j+0.5f) / (height-1.f);
-
-                for(size_t s = 0 ; s < config.samples_per_pixel; ++s)
-                {
-                    auto u = random_float(min_u, max_u);
-                    auto v = random_float(min_v, max_v);
-
-                    // Instanciate Ray
-                    auto r = camera.get_ray(u, v);
-
-                    color += ray_color(r, scene, config.num_iterations);
-                }
-                // Write color to render target
-                write_color(glm::ivec2{i,height-j-1}, color);
-            }
-            --progress;
-        }
-    };
-
-    const size_t lines_per_worker = height / threads.size();
-    for(size_t f = 0; f < threads.size(); ++f)
-    {
-        auto from = f * lines_per_worker;
-        auto to = (f == threads.size()-1)
-            ? height
-            : (f+1) * lines_per_worker;
-        threads[f] = std::thread(work, from, to);
-    }
-
-    while(progress > 0)
-    {
-        fmt::print("\rRows remaining: {}   ", progress);
-        fflush(stdout);
-        sleep(0.1);
-    }
-
-    for(size_t f = 0; f < threads.size(); ++f)
-        threads[f].join();
-}
-
-// // Async render
 // void Renderer::render(Scene& scene, Camera& camera)
 // {
 //     const auto width = render_target->get_width();
 //     const auto height = render_target->get_height();
 
-//     std::array<std::future<void>,4> futures;
-//     std::mutex mutex;
-//     std::condition_variable cv_results;
+//     std::array<std::thread,4> threads;
 
 //     std::atomic_size_t progress = height;
 //     auto work = [&](size_t from, size_t to) {
@@ -141,36 +80,98 @@ void Renderer::render(Scene& scene, Camera& camera)
 //         }
 //     };
 
-//     const size_t lines_per_worker = height / futures.size();
-//     for(size_t f = 0; f < futures.size(); ++f)
+//     const size_t lines_per_worker = height / threads.size();
+//     for(size_t f = 0; f < threads.size(); ++f)
 //     {
 //         auto from = f * lines_per_worker;
-//         auto to = (f == futures.size()-1)
+//         auto to = (f == threads.size()-1)
 //             ? height
 //             : (f+1) * lines_per_worker;
-
-//         // fmt::print("from: {}, to: {}\n", from, to);
-//         std::lock_guard<std::mutex> lock(mutex);
-//         futures[f] = std::async(std::launch::async | std::launch::deferred, work, from, to);
+//         threads[f] = std::thread(work, from, to);
 //     }
-
-//     // std::unique_lock<std::mutex> lock(mutex);
-//     // cv_results.wait(lock, [&] {
-//     //     // fmt::print("\rRows remaining: {}   ", progress);
-//     //     // fflush(stdout);
-//     //     return progress == height;
-//     // });
 
 //     while(progress > 0)
 //     {
 //         fmt::print("\rRows remaining: {}   ", progress);
 //         fflush(stdout);
-//         sleep(1.0);
+//         sleep(0.1);
 //     }
 
-//     for(size_t f = 0; f < futures.size(); ++f)
-//         futures[f].wait();
+//     for(size_t f = 0; f < threads.size(); ++f)
+//         threads[f].join();
 // }
+
+// Async render
+void Renderer::render(Scene& scene, Camera& camera)
+{
+    const auto width = render_target->get_width();
+    const auto height = render_target->get_height();
+
+    std::array<std::future<void>,4> futures;
+    std::mutex mutex;
+    std::condition_variable cv_results;
+
+    std::atomic_size_t progress = height;
+    auto work = [&](size_t from, size_t to) {
+        for(size_t j = from; j < to; ++j)
+        {
+            for(size_t i = 0; i < width; ++i)
+            {
+                glm::vec3 color{0,0,0};
+                // Stochastic sampling
+                auto min_u = (i-0.5f) / (width-1.f);
+                auto max_u = (i+0.5f) / (width-1.f);
+                auto min_v = (j-0.5f) / (height-1.f);
+                auto max_v = (j+0.5f) / (height-1.f);
+
+                for(size_t s = 0 ; s < config.samples_per_pixel; ++s)
+                {
+                    auto u = random_float(min_u, max_u);
+                    auto v = random_float(min_v, max_v);
+
+                    // Instanciate Ray
+                    auto r = camera.get_ray(u, v);
+
+                    color += ray_color(r, scene, config.num_iterations);
+                }
+                // Write color to render target
+                fmt::print("before\n");
+                write_color(glm::ivec2{i,height-j-1}, color);
+                fmt::print("after\n");
+            }
+            --progress;
+        }
+    };
+
+    const size_t lines_per_worker = height / futures.size();
+    for(size_t f = 0; f < futures.size(); ++f)
+    {
+        auto from = f * lines_per_worker;
+        auto to = (f == futures.size()-1)
+            ? height
+            : (f+1) * lines_per_worker;
+
+        std::lock_guard<std::mutex> lock(mutex);
+        futures[f] = std::async(std::launch::async | std::launch::deferred, work, from, to);
+    }
+
+    // std::unique_lock<std::mutex> lock(mutex);
+    // cv_results.wait(lock, [&] {
+    //     // fmt::print("\rRows remaining: {}   ", progress);
+    //     // fflush(stdout);
+    //     return progress == height;
+    // });
+
+    while(progress > 0)
+    {
+        // fmt::print("\rRows remaining: {}   ", progress);
+        // fflush(stdout);
+        sleep(1.0);
+    }
+
+    for(size_t f = 0; f < futures.size(); ++f)
+        futures[f].wait();
+}
 
 // // Single threaded render
 // void Renderer::render(Scene& scene, Camera& camera)
