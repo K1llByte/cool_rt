@@ -1,66 +1,170 @@
 {
     fmt = {
-        version = "8.1.1",
-        linkdirs = "/home/kb/.xmake/packages/f/fmt/8.1.1/212ea05ee1514fb8bc1d6d9f35de8988/lib",
-        __requirestr = "fmt",
-        sysincludedirs = "/home/kb/.xmake/packages/f/fmt/8.1.1/212ea05ee1514fb8bc1d6d9f35de8988/include",
         static = true,
-        __installdir = "/home/kb/.xmake/packages/f/fmt/8.1.1/212ea05ee1514fb8bc1d6d9f35de8988",
         links = "fmt",
-        libfiles = "/home/kb/.xmake/packages/f/fmt/8.1.1/212ea05ee1514fb8bc1d6d9f35de8988/lib/libfmt.a",
+        linkdirs = "/home/kb/.xmake/packages/f/fmt/8.1.1/212ea05ee1514fb8bc1d6d9f35de8988/lib",
+        __enabled = true,
+        version = "8.1.1",
         envs = {
+            PATH = {
+                "/home/kb/.xmake/packages/c/cmake/3.22.1/0f13fccf1bec481db8a56b7a3c0eff80/bin"
+            },
             LD_LIBRARY_PATH = {
                 "/home/kb/.xmake/packages/f/fmt/8.1.1/212ea05ee1514fb8bc1d6d9f35de8988/lib",
                 "/home/kb/.xmake/packages/c/cmake/3.22.1/0f13fccf1bec481db8a56b7a3c0eff80/lib"
-            },
-            PATH = {
-                "/home/kb/.xmake/packages/c/cmake/3.22.1/0f13fccf1bec481db8a56b7a3c0eff80/bin"
             }
         },
-        __enabled = true
-    },
-    glm = {
-        __requirestr = "glm",
-        __installdir = "/home/kb/.xmake/packages/g/glm/0.9.9+8/65b1ad153bda4a43b0454eba7969327f",
-        __enabled = true,
-        version = "0.9.9+8",
-        envs = {
-            LD_LIBRARY_PATH = {
-                "/home/kb/.xmake/packages/g/glm/0.9.9+8/65b1ad153bda4a43b0454eba7969327f/lib"
-            }
-        },
-        sysincludedirs = "/home/kb/.xmake/packages/g/glm/0.9.9+8/65b1ad153bda4a43b0454eba7969327f/include"
+        __installdir = "/home/kb/.xmake/packages/f/fmt/8.1.1/212ea05ee1514fb8bc1d6d9f35de8988",
+        sysincludedirs = "/home/kb/.xmake/packages/f/fmt/8.1.1/212ea05ee1514fb8bc1d6d9f35de8988/include",
+        libfiles = "/home/kb/.xmake/packages/f/fmt/8.1.1/212ea05ee1514fb8bc1d6d9f35de8988/lib/libfmt.a",
+        __requirestr = "fmt"
     },
     libgd = {
-        version = "2.3.2",
-        linkdirs = {
-            "/home/kb/.xmake/packages/l/libgd/2.3.2/29856e1fb8b04607ae5fcbd238c90be1/lib",
-            "/usr/lib"
-        },
-        __requirestr = "libgd",
-        sysincludedirs = {
-            "/home/kb/.xmake/packages/l/libgd/2.3.2/29856e1fb8b04607ae5fcbd238c90be1/include",
-            "/usr/include/libpng16"
-        },
         static = true,
-        __installdir = "/home/kb/.xmake/packages/l/libgd/2.3.2/29856e1fb8b04607ae5fcbd238c90be1",
         links = {
             "gd",
             "png16",
             "z"
         },
-        libfiles = "/home/kb/.xmake/packages/l/libgd/2.3.2/29856e1fb8b04607ae5fcbd238c90be1/lib/libgd.a",
+        linkdirs = {
+            "/home/kb/.xmake/packages/l/libgd/2.3.2/29856e1fb8b04607ae5fcbd238c90be1/lib",
+            "/usr/lib"
+        },
+        __enabled = true,
+        version = "2.3.2",
         envs = {
+            PATH = {
+                "/home/kb/.xmake/packages/c/cmake/3.22.1/0f13fccf1bec481db8a56b7a3c0eff80/bin"
+            },
             LD_LIBRARY_PATH = {
                 "/home/kb/.xmake/packages/l/libgd/2.3.2/29856e1fb8b04607ae5fcbd238c90be1/lib",
                 "/home/kb/.xmake/packages/c/cmake/3.22.1/0f13fccf1bec481db8a56b7a3c0eff80/lib",
                 "/home/kb/.xmake/packages/z/zlib/v1.2.12/f77d14620f8f47b2a7615c6bc3246284/lib",
                 "/home/kb/.xmake/packages/l/libpng/v1.6.37/115fc9081bf446bbb133ff75d014bd7a/lib"
-            },
-            PATH = {
-                "/home/kb/.xmake/packages/c/cmake/3.22.1/0f13fccf1bec481db8a56b7a3c0eff80/bin"
             }
         },
-        __enabled = true
+        __installdir = "/home/kb/.xmake/packages/l/libgd/2.3.2/29856e1fb8b04607ae5fcbd238c90be1",
+        sysincludedirs = {
+            "/home/kb/.xmake/packages/l/libgd/2.3.2/29856e1fb8b04607ae5fcbd238c90be1/include",
+            "/usr/include/libpng16"
+        },
+        libfiles = "/home/kb/.xmake/packages/l/libgd/2.3.2/29856e1fb8b04607ae5fcbd238c90be1/lib/libgd.a",
+        __requirestr = "libgd"
+    },
+    glfw = {
+        static = true,
+        links = {
+            "glfw3",
+            "OpenGL",
+            "Xrandr",
+            "Xinerama",
+            "Xcursor",
+            "Xrender",
+            "X11",
+            "Xi",
+            "Xfixes",
+            "Xext",
+            "X11-xcb",
+            "xcb",
+            "xcb-composite",
+            "xcb-damage",
+            "xcb-dpms",
+            "xcb-dri2",
+            "xcb-dri3",
+            "xcb-glx",
+            "xcb-present",
+            "xcb-randr",
+            "xcb-record",
+            "xcb-render",
+            "xcb-res",
+            "xcb-screensaver",
+            "xcb-shape",
+            "xcb-shm",
+            "xcb-sync",
+            "xcb-xf86dri",
+            "xcb-xfixes",
+            "xcb-xinerama",
+            "xcb-xinput",
+            "xcb-xkb",
+            "xcb-xtest",
+            "xcb-xv",
+            "xcb-xvmc",
+            "Xau",
+            "Xdmcp"
+        },
+        linkdirs = {
+            "/home/kb/.xmake/packages/g/glfw/3.3.6/703496809fe34548a9dbcf268bfa4db5/lib",
+            "/usr/lib"
+        },
+        __enabled = true,
+        version = "3.3.6",
+        envs = {
+            LD_LIBRARY_PATH = {
+                "/home/kb/.xmake/packages/g/glfw/3.3.6/703496809fe34548a9dbcf268bfa4db5/lib",
+                "/home/kb/.xmake/packages/c/cmake/3.22.1/0f13fccf1bec481db8a56b7a3c0eff80/lib",
+                "/home/kb/.xmake/packages/o/opengl/latest/4e0143c97b65425b855ad5fd03038b6a/lib",
+                "/home/kb/.xmake/packages/p/pkg-config/0.29.2/f9500a0d295b4a7aabf3f933f2972e71/lib",
+                "/home/kb/.xmake/packages/u/util-macros/1.19.2/31ceb591d38f4b8eaa0d68205fa2b8a3/lib",
+                "/home/kb/.xmake/packages/x/xorgproto/2021.5/1ac158af33224fd1944a64d9f508842c/lib",
+                "/home/kb/.xmake/packages/x/xtrans/1.4.0/576fb3beba324ff6ba8b503904027ceb/lib",
+                "/home/kb/.xmake/packages/o/openssl/1.1.1n/089dfd9bb6844c35959e4271b6051e42/lib",
+                "/home/kb/.xmake/packages/c/ca-certificates/20211118/e3358c0405f0445981f309ffe0ff771e/lib",
+                "/home/kb/.xmake/packages/l/libffi/3.4.2/3760478a5e514b6396aaffaa11893feb/lib",
+                "/home/kb/.xmake/packages/z/zlib/v1.2.12/f77d14620f8f47b2a7615c6bc3246284/lib",
+                "/home/kb/.xmake/packages/p/python/3.9.10/d06fa80222094670880bb9934b285f43/lib",
+                "/home/kb/.xmake/packages/x/xcb-proto/1.14.1/47c387a4e1de43fcac017b2e60f17f14/lib",
+                "/home/kb/.xmake/packages/l/libpthread-stubs/0.4/614c096241464f3e9897bd4661143059/lib",
+                "/home/kb/.xmake/packages/l/libxau/1.0.9/07df5435233c4d868caa9d0f7e10a62e/lib",
+                "/home/kb/.xmake/packages/l/libxdmcp/1.1.3/78672dd0294d4b21a7041b57aa194c10/lib",
+                "/home/kb/.xmake/packages/l/libxcb/1.14/1e1ca897748b41378771474a5b01599e/lib",
+                "/home/kb/.xmake/packages/l/libx11/1.7.3/839c7658d2fc456ca78139a3f21cded9/lib",
+                "/home/kb/.xmake/packages/l/libxext/1.3.4/ebd1b5b451434c32a7a71bc8cf20badb/lib",
+                "/home/kb/.xmake/packages/l/libxrender/0.9.10/806dec0aad544e9fa6b0f10142c5441d/lib",
+                "/home/kb/.xmake/packages/l/libxrandr/1.5.2/7e2234438abe46ef8622215d7dc8f3b9/lib",
+                "/home/kb/.xmake/packages/l/libxinerama/1.1.4/fbca2531329d4ef5aadf193cc1ad7dcc/lib",
+                "/home/kb/.xmake/packages/l/libxfixes/5.0.3/94d673be4ad24cbd97e5b00a52a2c919/lib",
+                "/home/kb/.xmake/packages/l/libxcursor/1.2.0/74629e954cd54dd4b68e35f81fca2dc1/lib",
+                "/home/kb/.xmake/packages/l/libxi/1.8/98f0dd4777c3417abf73c89d52845a65/lib"
+            },
+            PYTHONPATH = {
+                "/home/kb/.xmake/packages/p/python/3.9.10/d06fa80222094670880bb9934b285f43/lib/python3.9/site-packages"
+            },
+            PATH = {
+                "/home/kb/.xmake/packages/c/cmake/3.22.1/0f13fccf1bec481db8a56b7a3c0eff80/bin",
+                "/home/kb/.xmake/packages/p/pkg-config/0.29.2/f9500a0d295b4a7aabf3f933f2972e71/bin",
+                "/home/kb/.xmake/packages/p/python/3.9.10/d06fa80222094670880bb9934b285f43/bin",
+                "/home/kb/.xmake/packages/p/python/3.9.10/d06fa80222094670880bb9934b285f43/bin",
+                "/home/kb/.xmake/packages/p/python/3.9.10/d06fa80222094670880bb9934b285f43/Scripts"
+            }
+        },
+        __installdir = "/home/kb/.xmake/packages/g/glfw/3.3.6/703496809fe34548a9dbcf268bfa4db5",
+        syslinks = {
+            "dl",
+            "pthread"
+        },
+        sysincludedirs = {
+            "/home/kb/.xmake/packages/g/glfw/3.3.6/703496809fe34548a9dbcf268bfa4db5/include",
+            "/home/kb/.xmake/packages/x/xtrans/1.4.0/576fb3beba324ff6ba8b503904027ceb/include",
+            "/usr/include/X11/dri"
+        },
+        __requirestr = "glfw",
+        libfiles = "/home/kb/.xmake/packages/g/glfw/3.3.6/703496809fe34548a9dbcf268bfa4db5/lib/libglfw3.a",
+        defines = {
+            "_GLFW_X11",
+            "GLFW_INCLUDE_NONE"
+        },
+        license = "zlib"
+    },
+    glm = {
+        envs = {
+            LD_LIBRARY_PATH = {
+                "/home/kb/.xmake/packages/g/glm/0.9.9+8/65b1ad153bda4a43b0454eba7969327f/lib"
+            }
+        },
+        __installdir = "/home/kb/.xmake/packages/g/glm/0.9.9+8/65b1ad153bda4a43b0454eba7969327f",
+        sysincludedirs = "/home/kb/.xmake/packages/g/glm/0.9.9+8/65b1ad153bda4a43b0454eba7969327f/include",
+        __enabled = true,
+        version = "0.9.9+8",
+        __requirestr = "glm"
     }
 }

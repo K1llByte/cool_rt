@@ -2,6 +2,7 @@
 add_requires("fmt")
 add_requires("glm")
 add_requires("libgd")
+add_requires("glfw")
 
 -------------------- Ray Tracer -------------------
 
@@ -17,10 +18,12 @@ target("rt")
     -- Compiler Options
     add_includedirs("src")
     add_includedirs("lib/tiny_png_out")
+    add_includedirs("lib/imgui_docking/include")
     -- Dependencies
     add_packages("glm")
     add_packages("fmt")
+    add_packages("glfw")
     -- Library
     set_kind("binary")
     add_files("src/**.cpp")
-    add_files("lib/tiny_png_out/TinyPngOut.cpp")
+    add_files("lib/**.cpp")
