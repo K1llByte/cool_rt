@@ -4,6 +4,7 @@
 #include <future>
 #include <atomic>
 #include <ctime>
+#include <algorithm>
 
 void Renderer::write_color(const glm::ivec2& pos, glm::vec3 color)
 {

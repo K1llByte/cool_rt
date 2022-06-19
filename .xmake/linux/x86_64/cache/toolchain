@@ -1,22 +1,42 @@
 {
-    tool_target_rt_linux_x86_64_ld = {
+    tool_platform_linux_x86_64_ld = {
         toolname = "gxx",
-        program = "/usr/bin/g++",
         toolchain_info = {
-            arch = "x86_64",
             cachekey = "gcc_arch_x86_64_plat_linux",
             name = "gcc",
-            plat = "linux"
-        }
+            plat = "linux",
+            arch = "x86_64"
+        },
+        program = "/usr/bin/g++"
+    },
+    tool_platform_linux_x86_64_cc = {
+        toolname = "gcc",
+        toolchain_info = {
+            cachekey = "gcc_arch_x86_64_plat_linux",
+            name = "gcc",
+            plat = "linux",
+            arch = "x86_64"
+        },
+        program = "/usr/bin/gcc"
+    },
+    tool_target_rt_linux_x86_64_ld = {
+        toolname = "gxx",
+        toolchain_info = {
+            arch = "x86_64",
+            name = "gcc",
+            plat = "linux",
+            cachekey = "gcc_arch_x86_64_plat_linux"
+        },
+        program = "/usr/bin/g++"
     },
     tool_target_rt_linux_x86_64_cxx = {
         toolname = "gcc",
-        program = "/usr/bin/gcc",
         toolchain_info = {
-            arch = "x86_64",
             cachekey = "gcc_arch_x86_64_plat_linux",
             name = "gcc",
-            plat = "linux"
-        }
+            plat = "linux",
+            arch = "x86_64"
+        },
+        program = "/usr/bin/gcc"
     }
 }
