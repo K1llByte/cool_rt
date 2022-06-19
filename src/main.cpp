@@ -13,7 +13,7 @@
 #else
 #   define WIDTH  1920
 #   define HEIGHT 1080
-#   define SAMPLES_PER_PIXEL 10
+#   define SAMPLES_PER_PIXEL 100
 #   define NUM_ITERATIONS 50
 #endif
 
@@ -96,7 +96,9 @@ int main()
         lookat, // lookat
         glm::vec3{0,1,0}, // up
         50,
-        render_target.aspect_ratio());
+        render_target.aspect_ratio(),
+        0.f,
+        1.f);
 
     camera.set_defocus_blur(glm::length(position-lookat), 0.2);
 
@@ -106,10 +108,17 @@ int main()
     auto* glossy_metal = new Metal(glm::vec3{ 0.6, 0.6, 0.2 }, 0.4);
     auto* glass =        new Dielectric(1.5);
     auto scene = Scene({
-        Sphere(glm::vec3{ 1.2,      0, -1}, 0.5f, mirror_metal),
-        Sphere(glm::vec3{   0,      0, -1}, 0.5f, glossy_metal),
-        Sphere(glm::vec3{-1.2,      0, -1}, 0.5f, glass),
-        Sphere(glm::vec3{   0, -100.5, -1},  100, ground)
+        // new Sphere(glm::vec3{ 1.2, 0, -1}, 0.5f, mirror_metal),
+        new AnimatedSphere(
+            glm::vec3{ 1.2, 0, -1},
+            glm::vec3{ 1.2, 0.5, -1},
+            0.f,
+            1.f,
+            0.5f,
+            mirror_metal),
+        new Sphere(glm::vec3{   0,      0, -1}, 0.5f, glossy_metal),
+        new Sphere(glm::vec3{-1.2,      0, -1}, 0.5f, glass),
+        new Sphere(glm::vec3{   0, -100.5, -1},  100, ground)
     });
 
     Time::delta();

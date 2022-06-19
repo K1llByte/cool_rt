@@ -3,7 +3,7 @@
 #include "intersection.hpp"
 #include "material.hpp"
 
-struct Sphere
+struct Sphere: public abc::Hittable
 {
     glm::vec3      center;
     float          radius;
@@ -16,7 +16,7 @@ struct Sphere
     bool hit(const Ray& r, double t_min, double t_max, Intersection& rec) const;
 };
 
-struct AnimatedSphere
+struct AnimatedSphere: public abc::Hittable
 {
     glm::vec3      center0, center1;
     float          time0, time1;

@@ -8,10 +8,10 @@
 class Scene: public abc::Hittable
 {
     private:
-    std::vector<Sphere> models;
+    std::vector<abc::Hittable*> models;
     
     public:
-    Scene(const std::vector<Sphere>& _models)
+    Scene(const std::vector<abc::Hittable*>& _models)
         : models(_models) {}
 
     bool hit(const Ray& r, double t_min, double t_max, Intersection& rec) const;
