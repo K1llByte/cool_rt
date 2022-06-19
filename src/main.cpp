@@ -1,7 +1,6 @@
 #include "renderer.hpp"
 #include "time.hpp"
 
-// #include <future>
 #include <thread>
 
 // #define FAST_RENDER
@@ -14,8 +13,8 @@
 #else
 #   define WIDTH  1920
 #   define HEIGHT 1080
-#   define SAMPLES_PER_PIXEL 50
-#   define NUM_ITERATIONS 100
+#   define SAMPLES_PER_PIXEL 10
+#   define NUM_ITERATIONS 50
 #endif
 
 /////////////////// Render to window ///////////////////

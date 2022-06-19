@@ -1,4 +1,5 @@
-#define MULTITHREADED_RENDERER
+#define ASYNC_RENDERER
+// #define MULTITHREADED_RENDERER
 #include "renderer.hpp"
 
 #include <array>
@@ -51,12 +52,12 @@ void Renderer::render(Scene& scene, Camera& camera)
     const auto width = render_target->get_width();
     const auto height = render_target->get_height();
 
-    std::array<std::thread,4> threads;
+    std::array<std::thread, 4> threads;
 
-    std::atomic_size_t progress = height;
-    auto work = [&](size_t from, size_t to) {
-        for(size_t j = from; j < to; ++j)
-        {
+    std::atomic_size_t progress = height-1;
+    auto work = [&]() {
+        do {
+            size_t j = progress--;
             for(size_t i = 0; i < width; ++i)
             {
                 glm::vec3 color{0,0,0};
@@ -79,20 +80,16 @@ void Renderer::render(Scene& scene, Camera& camera)
                 // Write color to render target
                 write_color(glm::ivec2{i,height-j-1}, color);
             }
-            --progress;
-        }
+        } while(progress > 0);
     };
 
-    const size_t lines_per_worker = height / threads.size();
+    // Start threads
     for(size_t f = 0; f < threads.size(); ++f)
     {
-        auto from = f * lines_per_worker;
-        auto to = (f == threads.size()-1)
-            ? height
-            : (f+1) * lines_per_worker;
-        threads[f] = std::thread(work, from, to);
+        threads[f] = std::thread(work);
     }
 
+    // Control progress
     while(progress > 0)
     {
         fmt::print("\rRows remaining: {}   ", progress);
@@ -100,6 +97,7 @@ void Renderer::render(Scene& scene, Camera& camera)
         sleep(0.1);
     }
 
+    // Wait for threads to end
     for(size_t f = 0; f < threads.size(); ++f)
         threads[f].join();
 }
@@ -113,13 +111,14 @@ void Renderer::render(Scene& scene, Camera& camera)
     const auto height = render_target->get_height();
 
     std::array<std::future<void>,4> futures;
-    std::mutex mutex;
-    std::condition_variable cv_results;
+    // std::array<std::future<void>, 4> futures;
 
-    std::atomic_size_t progress = height;
-    auto work = [&](size_t from, size_t to) {
-        for(size_t j = from; j < to; ++j)
-        {
+    std::atomic_size_t progress = height-1;
+    std::atomic_size_t thread_id = 0;
+    auto work = [&]() {
+        size_t id = thread_id++;
+        do {
+            size_t j = progress--;
             for(size_t i = 0; i < width; ++i)
             {
                 glm::vec3 color{0,0,0};
@@ -140,38 +139,23 @@ void Renderer::render(Scene& scene, Camera& camera)
                     color += ray_color(r, scene, config.num_iterations);
                 }
                 // Write color to render target
-                // fmt::print("before\n");
                 write_color(glm::ivec2{i,height-j-1}, color);
-                // fmt::print("after\n");
             }
-            --progress;
-        }
+        } while(progress > 0);
     };
 
-    const size_t lines_per_worker = height / futures.size();
+    // Start jobs
     for(size_t f = 0; f < futures.size(); ++f)
     {
-        auto from = f * lines_per_worker;
-        auto to = (f == futures.size()-1)
-            ? height
-            : (f+1) * lines_per_worker;
-
-        std::lock_guard<std::mutex> lock(mutex);
-        futures[f] = std::async(std::launch::async | std::launch::deferred, work, from, to);
+        futures[f] = std::async(std::launch::async | std::launch::deferred, work);
     }
 
-    // std::unique_lock<std::mutex> lock(mutex);
-    // cv_results.wait(lock, [&] {
-    //     // fmt::print("\rRows remaining: {}   ", progress);
-    //     // fflush(stdout);
-    //     return progress == height;
-    // });
-
+    // Control progress
     while(progress > 0)
     {
-        // fmt::print("\rRows remaining: {}   ", progress);
-        // fflush(stdout);
-        sleep(1.0);
+        fmt::print("\rRows remaining: {}   ", progress);
+        fflush(stdout);
+        sleep(0.1);
     }
 
     for(size_t f = 0; f < futures.size(); ++f)
@@ -187,8 +171,8 @@ void Renderer::render(Scene& scene, Camera& camera)
     const auto height = render_target->get_height();
     for(size_t j = 0; j < height; ++j)
     {
-        fmt::print("\rRows remaining: {}   ", height-j-1);
-        fflush(stdout);
+        // fmt::print("\rRows remaining: {}   ", height-j-1);
+        // fflush(stdout);
         for(size_t i = 0; i < width; ++i)
         {
             glm::vec3 color{0,0,0};

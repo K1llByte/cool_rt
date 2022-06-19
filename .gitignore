@@ -2,3 +2,5 @@
 [Bb]in/
 [Bb]uild/
 .xmake/
+.vscode/
+.*/
