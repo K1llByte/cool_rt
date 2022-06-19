@@ -1,4 +1,4 @@
-// #define ASYNC_RENDERER
+#define ASYNC_RENDERER
 // #define MULTITHREADED_RENDERER
 #include "renderer.hpp"
 

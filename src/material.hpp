@@ -39,7 +39,7 @@ class Lambertian: public abc::Material
         // Step to avoid NaN's and invalid results
         if(near_zero(scatter_direction))
             scatter_direction = rec.normal;
-        scattered = Ray{rec.point, scatter_direction};
+        scattered = Ray(rec.point, scatter_direction);
         attenuation = albedo;
         return true;
     }
@@ -59,7 +59,7 @@ class Metal: public abc::Material
             const Ray& r_in, const Intersection& rec, glm::vec3& attenuation, Ray& scattered) const
     {
         glm::vec3 reflected = glm::reflect(glm::normalize(r_in.direction), rec.normal);
-        scattered = Ray{rec.point, reflected + fuzziness * random_in_unit_sphere()};
+        scattered = Ray(rec.point, reflected + fuzziness * random_in_unit_sphere());
         attenuation = albedo;
         return (dot(scattered.direction, rec.normal) > 0);
     }
@@ -101,7 +101,7 @@ class Dielectric: public abc::Material
 
         // glm::vec3 refracted = glm::refract(unit_direction, rec.normal, refraction_ratio);
 
-        scattered = Ray{rec.point, scatter_direction};
+        scattered = Ray(rec.point, scatter_direction);
         return true;
     }
 };

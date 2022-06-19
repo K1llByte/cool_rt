@@ -5,9 +5,13 @@ Camera::Camera(
     glm::vec3 lookat,
     glm::vec3 _up,
     float _vfov,
-    float aspect_ratio)
+    float aspect_ratio,
+    float _time0,
+    float _time1)
     : origin(position)
     , vfov(_vfov) 
+    , time0(_time0) 
+    , time1(_time1)
 {
     // float h = tan(glm::radians(vfov)/2.f);
     // // viewport_height varies according to the fov
@@ -47,10 +51,11 @@ Ray Camera::get_ray(float u, float v) const
     glm::vec3 rd = lens_radius * random_in_unit_disk();
     glm::vec3 offset = right * rd.x + up * rd.y;
 
-    return Ray{
+    return Ray(
         origin + offset,
-        lower_left_corner + u*horizontal + v*vertical - origin - offset
-    };
+        lower_left_corner + u*horizontal + v*vertical - origin - offset,
+        random_float(time0, time1)
+    );
 }
 
 void Camera::set_defocus_blur(float focus_dist, float aperture)
