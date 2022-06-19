@@ -158,7 +158,7 @@ GuiWindow::GuiWindow(size_t _width, size_t _height)
     // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
     // - Read 'docs/FONTS.md' for more instructions and details.
     // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-    io.Fonts->AddFontFromFileTTF("/tmp/Ruda-VariableFont_wght.ttf", 16.0f);
+    io.Fonts->AddFontFromFileTTF("assets/Ruda-Bold.ttf", 16.0f);
     //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != NULL);
 
