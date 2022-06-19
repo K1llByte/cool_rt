@@ -3,12 +3,12 @@
 
 #include <thread>
 
-// #define FAST_RENDER
+#define FAST_RENDER
 
 #ifdef FAST_RENDER
 #   define WIDTH  400
 #   define HEIGHT 300
-#   define SAMPLES_PER_PIXEL 10
+#   define SAMPLES_PER_PIXEL 500
 #   define NUM_ITERATIONS 50
 #else
 #   define WIDTH  1920

@@ -1,4 +1,4 @@
-#define ASYNC_RENDERER
+// #define ASYNC_RENDERER
 // #define MULTITHREADED_RENDERER
 #include "renderer.hpp"
 
@@ -116,6 +116,7 @@ void Renderer::render(Scene& scene, Camera& camera)
     std::atomic_size_t progress = height-1;
     std::atomic_size_t thread_id = 0;
     auto work = [&]() {
+        auto random_dist = RandomDistribution();
         size_t id = thread_id++;
         do {
             size_t j = progress--;
@@ -130,8 +131,8 @@ void Renderer::render(Scene& scene, Camera& camera)
 
                 for(size_t s = 0 ; s < config.samples_per_pixel; ++s)
                 {
-                    auto u = random_float(min_u, max_u);
-                    auto v = random_float(min_v, max_v);
+                    auto u = random_float(random_dist, min_u, max_u);
+                    auto v = random_float(random_dist, min_v, max_v);
 
                     // Instanciate Ray
                     auto r = camera.get_ray(u, v);
@@ -171,10 +172,12 @@ void Renderer::render(Scene& scene, Camera& camera)
     const auto height = render_target->get_height();
     for(size_t j = 0; j < height; ++j)
     {
-        // fmt::print("\rRows remaining: {}   ", height-j-1);
-        // fflush(stdout);
         for(size_t i = 0; i < width; ++i)
         {
+            if((j*width + i) % 50 == 0) {
+                fmt::print("\rRows remaining: {}   ", height-j-1);
+                fflush(stdout);
+            }
             glm::vec3 color{0,0,0};
             // Stochastic sampling
             auto min_u = (i-0.5f) / (width-1.f);

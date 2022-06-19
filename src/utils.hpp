@@ -13,10 +13,22 @@ inline float random_float() {
     return distribution(generator);
 }
 
+
 inline float random_float(float min, float max) {
     static std::uniform_real_distribution<float> distribution(0.f, 1.f);
     static std::mt19937 generator;
     return distribution(generator)*(max - min) + min;
+}
+
+struct RandomDistribution {
+    std::uniform_real_distribution<float> distribution;
+    std::mt19937                          generator;
+    RandomDistribution()
+        : distribution(0.f, 1.f) {}
+};
+
+inline float random_float(RandomDistribution& rd, float min, float max) {
+    return rd.distribution(rd.generator)*(max - min) + min;
 }
 
 inline glm::vec3 random_vec3(float min, float max)
