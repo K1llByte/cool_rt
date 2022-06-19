@@ -1,3 +1,4 @@
+#define MULTITHREADED_RENDERER
 #include "renderer.hpp"
 
 #include <array>
@@ -16,9 +17,9 @@ void Renderer::write_color(const glm::ivec2& pos, glm::vec3 color)
         256 * std::clamp(color.b, 0.0f, 0.999f)
     };
 
-    fmt::print("before {}, {}\n", pos.x, pos.y);
+    // fmt::print("before {}, {}\n", pos.x, pos.y);
     render_target->set_pixel(pos.x, pos.y, pixel);
-    fmt::print("after\n");
+    // fmt::print("after\n");
 }
 
 glm::vec3 Renderer::ray_color(const Ray& r, Scene& scene, float depth)
@@ -43,65 +44,68 @@ glm::vec3 Renderer::ray_color(const Ray& r, Scene& scene, float depth)
     return (1.0f-t) * glm::vec3{1.0f, 1.0f, 1.0f} + t * glm::vec3{0.5f, 0.7f, 1.0f};
 }
 
+#ifdef MULTITHREADED_RENDERER
 // Multithreaded render
-// void Renderer::render(Scene& scene, Camera& camera)
-// {
-//     const auto width = render_target->get_width();
-//     const auto height = render_target->get_height();
+void Renderer::render(Scene& scene, Camera& camera)
+{
+    const auto width = render_target->get_width();
+    const auto height = render_target->get_height();
 
-//     std::array<std::thread,4> threads;
+    std::array<std::thread,4> threads;
 
-//     std::atomic_size_t progress = height;
-//     auto work = [&](size_t from, size_t to) {
-//         for(size_t j = from; j < to; ++j)
-//         {
-//             for(size_t i = 0; i < width; ++i)
-//             {
-//                 glm::vec3 color{0,0,0};
-//                 // Stochastic sampling
-//                 auto min_u = (i-0.5f) / (width-1.f);
-//                 auto max_u = (i+0.5f) / (width-1.f);
-//                 auto min_v = (j-0.5f) / (height-1.f);
-//                 auto max_v = (j+0.5f) / (height-1.f);
+    std::atomic_size_t progress = height;
+    auto work = [&](size_t from, size_t to) {
+        for(size_t j = from; j < to; ++j)
+        {
+            for(size_t i = 0; i < width; ++i)
+            {
+                glm::vec3 color{0,0,0};
+                // Stochastic sampling
+                auto min_u = (i-0.5f) / (width-1.f);
+                auto max_u = (i+0.5f) / (width-1.f);
+                auto min_v = (j-0.5f) / (height-1.f);
+                auto max_v = (j+0.5f) / (height-1.f);
 
-//                 for(size_t s = 0 ; s < config.samples_per_pixel; ++s)
-//                 {
-//                     auto u = random_float(min_u, max_u);
-//                     auto v = random_float(min_v, max_v);
+                for(size_t s = 0 ; s < config.samples_per_pixel; ++s)
+                {
+                    auto u = random_float(min_u, max_u);
+                    auto v = random_float(min_v, max_v);
 
-//                     // Instanciate Ray
-//                     auto r = camera.get_ray(u, v);
+                    // Instanciate Ray
+                    auto r = camera.get_ray(u, v);
 
-//                     color += ray_color(r, scene, config.num_iterations);
-//                 }
-//                 // Write color to render target
-//                 write_color(glm::ivec2{i,height-j-1}, color);
-//             }
-//             --progress;
-//         }
-//     };
+                    color += ray_color(r, scene, config.num_iterations);
+                }
+                // Write color to render target
+                write_color(glm::ivec2{i,height-j-1}, color);
+            }
+            --progress;
+        }
+    };
 
-//     const size_t lines_per_worker = height / threads.size();
-//     for(size_t f = 0; f < threads.size(); ++f)
-//     {
-//         auto from = f * lines_per_worker;
-//         auto to = (f == threads.size()-1)
-//             ? height
-//             : (f+1) * lines_per_worker;
-//         threads[f] = std::thread(work, from, to);
-//     }
+    const size_t lines_per_worker = height / threads.size();
+    for(size_t f = 0; f < threads.size(); ++f)
+    {
+        auto from = f * lines_per_worker;
+        auto to = (f == threads.size()-1)
+            ? height
+            : (f+1) * lines_per_worker;
+        threads[f] = std::thread(work, from, to);
+    }
 
-//     while(progress > 0)
-//     {
-//         fmt::print("\rRows remaining: {}   ", progress);
-//         fflush(stdout);
-//         sleep(0.1);
-//     }
+    while(progress > 0)
+    {
+        fmt::print("\rRows remaining: {}   ", progress);
+        fflush(stdout);
+        sleep(0.1);
+    }
 
-//     for(size_t f = 0; f < threads.size(); ++f)
-//         threads[f].join();
-// }
+    for(size_t f = 0; f < threads.size(); ++f)
+        threads[f].join();
+}
+#endif
 
+#ifdef ASYNC_RENDERER
 // Async render
 void Renderer::render(Scene& scene, Camera& camera)
 {
@@ -136,9 +140,9 @@ void Renderer::render(Scene& scene, Camera& camera)
                     color += ray_color(r, scene, config.num_iterations);
                 }
                 // Write color to render target
-                fmt::print("before\n");
+                // fmt::print("before\n");
                 write_color(glm::ivec2{i,height-j-1}, color);
-                fmt::print("after\n");
+                // fmt::print("after\n");
             }
             --progress;
         }
@@ -173,37 +177,40 @@ void Renderer::render(Scene& scene, Camera& camera)
     for(size_t f = 0; f < futures.size(); ++f)
         futures[f].wait();
 }
+#endif
 
-// // Single threaded render
-// void Renderer::render(Scene& scene, Camera& camera)
-// {
-//     const auto width = render_target->get_width();
-//     const auto height = render_target->get_height();
-//     for(size_t j = 0; j < height; ++j)
-//     {
-//         fmt::print("\rRows remaining: {}   ", height-j-1);
-//         fflush(stdout);
-//         for(size_t i = 0; i < width; ++i)
-//         {
-//             glm::vec3 color{0,0,0};
-//             // Stochastic sampling
-//             auto min_u = (i-0.5f) / (width-1.f);
-//             auto max_u = (i+0.5f) / (width-1.f);
-//             auto min_v = (j-0.5f) / (height-1.f);
-//             auto max_v = (j+0.5f) / (height-1.f);
+#if !defined(MULTITHREADED_RENDERER) && !defined(ASYNC_RENDERER)
+// Single threaded render
+void Renderer::render(Scene& scene, Camera& camera)
+{
+    const auto width = render_target->get_width();
+    const auto height = render_target->get_height();
+    for(size_t j = 0; j < height; ++j)
+    {
+        fmt::print("\rRows remaining: {}   ", height-j-1);
+        fflush(stdout);
+        for(size_t i = 0; i < width; ++i)
+        {
+            glm::vec3 color{0,0,0};
+            // Stochastic sampling
+            auto min_u = (i-0.5f) / (width-1.f);
+            auto max_u = (i+0.5f) / (width-1.f);
+            auto min_v = (j-0.5f) / (height-1.f);
+            auto max_v = (j+0.5f) / (height-1.f);
 
-//             for(size_t s = 0 ; s < config.samples_per_pixel; ++s)
-//             {
-//                 auto u = random_float(min_u, max_u);
-//                 auto v = random_float(min_v, max_v);
+            for(size_t s = 0 ; s < config.samples_per_pixel; ++s)
+            {
+                auto u = random_float(min_u, max_u);
+                auto v = random_float(min_v, max_v);
 
-//                 // Instanciate Ray
-//                 auto r = camera.get_ray(u, v);
+                // Instanciate Ray
+                auto r = camera.get_ray(u, v);
 
-//                 color += ray_color(r, scene, config.num_iterations);
-//             }
-//             // Write color to render target
-//             write_color(render_target, glm::ivec2{i,height-j-1}, color);
-//         }
-//     }
-// }
+                color += ray_color(r, scene, config.num_iterations);
+            }
+            // Write color to render target
+            write_color(glm::ivec2{i,height-j-1}, color);
+        }
+    }
+}
+#endif

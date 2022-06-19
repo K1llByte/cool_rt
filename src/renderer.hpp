@@ -20,8 +20,8 @@ struct RayTracerConfig
 class Renderer
 {
     public:
-    abc::RenderTarget*    render_target;
-    RayTracerConfig  config;
+    abc::RenderTarget* render_target;
+    RayTracerConfig    config;
 
     public:
     Renderer(abc::RenderTarget* _render_target, const RayTracerConfig& _config = {})
