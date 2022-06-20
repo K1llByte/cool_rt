@@ -37,11 +37,13 @@ concept Hittable = requires(T a, const Ray& r, double t_min, double t_max, Inter
     { a.hit(r, t_min, t_max, rec) };
 };
 
-// Interface to force the implementation of the hit method
+// Interface to force the implementation of the
+// hit and make_bounding_box methods
 namespace abc
 {
     struct Hittable
     {
         virtual bool hit(const Ray&, double, double, Intersection&) const = 0;
+        virtual bool make_bounding_box(float time0, float time1, AABB& output_box) const = 0;
     };
 };

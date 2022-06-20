@@ -38,6 +38,14 @@ bool Sphere::hit(const Ray& r, double t_min, double t_max, Intersection& rec) co
     return true;
 }
 
+bool Sphere::make_bounding_box(float time0, float time1, AABB& output_box) const
+{
+    output_box = AABB(
+        center - glm::vec3{radius, radius, radius},
+        center + glm::vec3{radius, radius, radius});
+    return true;
+}
+
 
 bool AnimatedSphere::hit(const Ray& r, double t_min, double t_max, Intersection& rec) const
 {
@@ -72,6 +80,20 @@ bool AnimatedSphere::hit(const Ray& r, double t_min, double t_max, Intersection&
     rec.set_face_normal(r, outward_normal);
     rec.material = material;
 
+    return true;
+}
+
+bool AnimatedSphere::make_bounding_box(float _time0, float _time1, AABB& output_box) const
+{
+    // Temporary bounding boxing to compute the big box
+    // surrounding all possible positions from the animation
+    AABB box0(
+        center(_time0) - glm::vec3{radius},
+        center(_time0) + glm::vec3{radius});
+    AABB box1(
+        center(_time1) - glm::vec3{radius},
+        center(_time1) + glm::vec3{radius});
+    output_box = surrounding_box(box0, box1);
     return true;
 }
 

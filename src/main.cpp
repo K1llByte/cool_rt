@@ -129,3 +129,37 @@ int main()
     // Save render to image file
     render_target.save("image.png");
 }
+
+///////////////////////////////////////////////////////////
+
+// struct Deedee
+// {
+//     virtual void deedee() = 0;
+// };
+
+// struct Doodoo
+// {
+//     virtual void doodoo() = 0;
+// };
+
+// template<typename T>
+//     requires std::is_base_of<Deedee, T>::value
+//         && std::is_base_of<Doodoo, T>::value 
+// struct Foo
+// {
+//     T* inner;
+// };
+
+
+// struct Deedoo:
+//     public Deedee,
+//     public Doodoo
+// {
+//     void deedee() override { fmt::print("deedee"); }
+//     void doodoo() override { fmt::print("doodoo"); }
+// };
+
+// int main() {
+//     Foo<Deedoo> foo;
+//     foo.inner->deedee();
+// }
